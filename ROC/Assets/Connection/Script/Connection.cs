@@ -5,6 +5,7 @@
 #region Bibliothèque
 using System.Collections;
 using System.Collections.Generic;
+using MySql;   // On rajoute la bibliothèque MySql.
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -40,26 +41,6 @@ public class Connection : MonoBehaviour
    #endregion
 
    #region Méthode publique
-   public void Verification_Utilisateur()
-   {
-      // On vérifie si les champs de l'utilisateur et de mot passe a du texte saisis.
-      if(Utilisateur.text == "" && MotDePasse.text == "")
-         SceneManager.LoadScene("Notification_Default", LoadSceneMode.Single);
-      else
-      {
-         // Si la zone saisis n'a pas le texte "Équipe", envoie une erreur dans la console. 
-         if (Utilisateur.text != "Équipe")
-            SceneManager.LoadScene("Notification_Utilisateur", LoadSceneMode.Single);
-         else
-         {
-            // On vérifie si le mot de passe est valide.
-            if (MotDePasse.text != "Mario334!")
-               SceneManager.LoadScene("Notification_MotDePasse", LoadSceneMode.Single);
-            else
-               SceneManager.LoadScene("Main", LoadSceneMode.Single);
-         }
-      }
-   }
 
    /// <summary>
    /// Jeu de test pour essayer la connection
