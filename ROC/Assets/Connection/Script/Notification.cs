@@ -25,5 +25,6 @@ public class Notification : MonoBehaviour
    {
       SceneManager.LoadScene("Connection", LoadSceneMode.Single);
    }
+
    #endregion
 }

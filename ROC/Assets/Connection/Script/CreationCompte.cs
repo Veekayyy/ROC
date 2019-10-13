@@ -6,6 +6,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using MySql;   // On rajoute la bibliothèque MySql.
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -39,6 +40,7 @@ public class CreationCompte : MonoBehaviour
 
    #region Système
    EventSystem systeme;
+   DatabaseManager manager_bd;
    #endregion
 
    #endregion
@@ -47,6 +49,7 @@ public class CreationCompte : MonoBehaviour
    {
       // On initialise la variable system.
       systeme = EventSystem.current;
+      manager_bd = GetComponent<DatabaseManager>();
    }
 
    private void Update()
@@ -58,6 +61,26 @@ public class CreationCompte : MonoBehaviour
    #region Méthode publique
 
    #region Bouton
+   public void Creation()
+   {
+      // On vérifie l'utilisateur respecte les normes.
+      if (Verification_Utilisateur())
+      {
+         // On vérifie si le mot de passe respecte les normes.
+         if (Verification_MotDePasse(false))
+         {
+            if (Verification_MotDePasse(true))
+               manager_bd.Enregistrement();
+            else
+               SceneManager.LoadScene("Notification_MotDePasse", LoadSceneMode.Single);
+         }
+         else
+            SceneManager.LoadScene("Notification_MotDePasse", LoadSceneMode.Single);
+      }
+      else
+         SceneManager.LoadScene("Notification_Utilisateur", LoadSceneMode.Single);
+   }
+   
    public void Annuler()
    {
       SceneManager.LoadScene("Connection", LoadSceneMode.Single);
@@ -86,7 +109,7 @@ public class CreationCompte : MonoBehaviour
    public bool Verification_MotDePasse(bool Confirmation)
    {
       // Déclaration des variables locales.
-      InputField MotPasse_Verifier = (Confirmation ? MotDePasse : Confirmation_MotDePasse);
+      InputField MotPasse_Verifier = (Confirmation ? Confirmation_MotDePasse : MotDePasse);
       
       // Minimum : un caractère.
       // Maximum : 15 caractère.
@@ -98,28 +121,15 @@ public class CreationCompte : MonoBehaviour
          return false;   // S'il ne respecte pas les caractérisque, on retourne faux.
 
 
-      return true;
-   }
-
-   public bool Verification_Confirmation()
-   {
-      // Minimum : un caractère.
-      // Maximum : 15 caractère.
-      // Caractère alpha numérique et caractères spéciaux.
-      // Case ensitive.
-      // Mot de passe parail.
-
-      // On regarde si le mot de passe respect c'est norme.
-      if (!Verification_MotDePasse(true))
-         return false;
-
-      // On regarde si le mot de passe est parail comme le champ de mot de passe.
-      if (MotDePasse.text != Confirmation_MotDePasse.text)
-         return false;
+      if(Confirmation)
+      {
+         // Si les deux mots de passe n'est pas parail alors retourne faux.
+         if (MotPasse_Verifier.text != MotDePasse.text)
+            return false;
+      }
 
       return true;
    }
-
 
    #endregion
 
@@ -138,7 +148,7 @@ public class CreationCompte : MonoBehaviour
          if (prochain != null)
          {
             // On crée une variable bouton qui va trouver le prochain bouton.
-            Button bouton = prochain.GetComponent<Button>();
+            InputField bouton = prochain.GetComponent<InputField>();
 
             // Si le prochain bouton n'est pas null, fait ceci.
             if (bouton != null)
