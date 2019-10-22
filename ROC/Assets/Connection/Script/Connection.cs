@@ -28,6 +28,11 @@ public class Connection : MonoBehaviour
 
    #region Méthode Unity
 
+   private void Start()
+   {
+      systeme = EventSystem.current;
+   }
+
    private void Update()
    {
       // On fait la tabulation si l'utilisateur clique sur tabulation.
@@ -92,11 +97,11 @@ public class Connection : MonoBehaviour
          if(prochain != null)
          {
             // On crée une variable bouton qui va trouver le prochain bouton.
-            Button bouton = prochain.GetComponent<Button>();
+            InputField zonedetexte = prochain.GetComponent<InputField>();
 
             // Si le prochain bouton n'est pas null, fait ceci.
-            if (bouton != null)
-               bouton.OnPointerClick(new PointerEventData(systeme));
+            if (zonedetexte != null)
+               zonedetexte.OnPointerClick(new PointerEventData(systeme));
 
             systeme.SetSelectedGameObject(prochain.gameObject, new BaseEventData(systeme));
          }
