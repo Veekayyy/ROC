@@ -17,7 +17,7 @@ public class Connection : MonoBehaviour
 {
    #region Attributs
    EventSystem systeme;
-   
+
    public Button btnConnection;
    public Button btnCreationCompte;
    public Button btnFermer;
@@ -27,11 +27,6 @@ public class Connection : MonoBehaviour
    #endregion
 
    #region Méthode Unity
-   private void Start()
-   {
-      // On initialise la variable system.
-      systeme = EventSystem.current;
-   }
 
    private void Update()
    {
