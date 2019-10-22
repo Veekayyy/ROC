@@ -25,8 +25,8 @@ public class DatabaseManager : MonoBehaviour
    public InputField IfMotDePasse;
 
    MySqlConnection con;
-   #endregion
-
+    #endregion
+    
    // Change avant le démarrage de l'application
    void ConnectBDD()
    {

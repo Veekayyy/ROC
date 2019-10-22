@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 147471514455017707}
   - component: {fileID: 4979229349226513698}
+  - component: {fileID: -1652917693602624615}
   m_Layer: 0
   m_Name: enemy-death-2
   m_TagString: Untagged
@@ -80,3 +81,15 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-1652917693602624615
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6807001568588750895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7324e9dc92332b4468a3ad6a299cb1bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -6,24 +6,24 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Main.unity
-    guid: 2e08b08a7a0aa124986ff9b9c89a6e1d
-  - enabled: 0
-    path: Assets/Scenes/SampleScene.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
-  - enabled: 1
     path: Assets/Connection/Scenes/Connection.unity
     guid: 82daf199d452e8e40b4bc06603ca3611
   - enabled: 1
-    path: Assets/Connection/Scenes/CreationCompte.unity
-    guid: 529666f6faedc024ca91530de5d9797c
+    path: Assets/Scenes/Main.unity
+    guid: 2e08b08a7a0aa124986ff9b9c89a6e1d
+  - enabled: 1
+    path: Assets/Connection/Scenes/Notification/Notification_Creation.unity
+    guid: 9d8cf841ab4f67247ae5173080b2f379
+  - enabled: 1
+    path: Assets/Connection/Scenes/Notification/Notification_ExisteUtilisateur.unity
+    guid: 098ee535a81868b4a93b2cc0222a2bf7
   - enabled: 1
     path: Assets/Connection/Scenes/Notification/Notification_Default.unity
     guid: ba49bb98dd80bce4c8b8219f67af7ab5
   - enabled: 1
-    path: Assets/Connection/Scenes/Notification/Notification_MotDePasse.unity
-    guid: 331bffe55a8d78e48adde949e420e2ff
-  - enabled: 1
     path: Assets/Connection/Scenes/Notification/Notification_Utilisateur.unity
     guid: 6b0420ce087b1284a8f95ca2d62fa59b
+  - enabled: 1
+    path: Assets/Connection/Scenes/CreationCompte.unity
+    guid: 529666f6faedc024ca91530de5d9797c
   m_configObjects: {}

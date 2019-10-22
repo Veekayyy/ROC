@@ -4,29 +4,43 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-   // Start is called before the first frame update
+    // Start is called before the first frame update
+    [SerializeField]
+    [Space]
+    [Header("CONST DU JOUEUR")]
+    public int Niveau;
+    public Stat vie;
 
-   [SerializeField]
-   private Stat vie;
-
-   private void Awake()
-   {
-      vie.Initialise();
-   }
-
-   // Update is called once per frame
-   void Update()
+    private void Awake()
     {
-      if (Input.GetKeyDown(KeyCode.Q))
-      {
-         vie.CurrentVal += 10;
+        vie.Initialise();
 
-      }
+        Niveau = 1;
 
-      if (Input.GetKeyDown(KeyCode.E))
-      {
-         vie.CurrentVal -= 10;
+    }
 
-      }
-   }
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            vie.CurrentVal += 10;
+
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            vie.CurrentVal -= 10;
+
+        }
+
+        if (vie.CurrentVal <= 0 )
+        {
+            
+            Destroy(gameObject);
+        }
+    }
+
+
+   
 }

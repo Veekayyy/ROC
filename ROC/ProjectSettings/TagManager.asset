@@ -5,6 +5,25 @@ TagManager:
   serializedVersion: 2
   tags:
   - Bouton
+  - cnv1
+  - layerAir
+  - layerCollision
+  - layerGround
+  - player
+  - ennemy
+  - lstEnnemy
+  - txtQuestion
+  - reglage
+  - labelChoix1
+  - labelChoix2
+  - labelChoix3
+  - choix1
+  - listeReponses
+  - felicitation
+  - txtMauvais
+  - puzzle1
+  - enigmeA
+  - coffreActif
   layers:
   - Default
   - TransparentFX
@@ -14,7 +33,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - Puzzle
   - 
   - 
   - 
