@@ -51,11 +51,14 @@ public class ButtonListControl : MonoBehaviour
         CanvasGroup CanvaAOuvrir = GameObject.FindGameObjectWithTag("cnv1").GetComponent<CanvasGroup>();
         Text duTexte = GameObject.FindGameObjectWithTag("txtQuestion").GetComponent<Text>();
         Dropdown choixItem3 = GameObject.FindGameObjectWithTag("listeReponses").GetComponent<Dropdown>();
-        
+        Text txtBonus = GameObject.FindGameObjectWithTag("bonusEnigme").GetComponent<Text>();
+
         // Initialiser le titre des choix possibles
         choixItem3.options.Add(new Dropdown.OptionData() { text = "Réponses possibles" });
         choixItem3.value = choixItem3.options.Count - 1;
         choixItem3.options.RemoveAt(choixItem3.options.Count - 1);
+        
+        txtBonus.text = "Récompense : 30 exp.";
 
         duTexte.name = id;
 
@@ -144,10 +147,11 @@ public class ButtonListControl : MonoBehaviour
 
                 break;
             case "9":
+                CanvasGroup puzzle1 = GameObject.FindGameObjectWithTag("puzzle1").GetComponent<CanvasGroup>();
+                puzzle1.alpha = 1;
+                puzzle1.blocksRaycasts = true;
 
 
-                puzzle1.SetActive(true);
-                puzzle1.transform.position = GameObject.FindGameObjectWithTag("player").transform.position;
 
                 break;
 

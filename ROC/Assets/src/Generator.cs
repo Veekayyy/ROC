@@ -24,10 +24,11 @@ public class Generator
     private TileType[,] _maze;
     private List<Vector2Int> _directions;
 
-    private Dictionary<Rect, Room> _listRooms;
-    private List<Room> _rooms;
-    private List<Room> _importantRoom;
+    private Dictionary<Rect, Salle> _listRooms;
+    private List<Salle> _rooms;
+    private List<Salle> _importantRoom;
     private List<Vector2> _lstPath;
+    private int _quantityRoom;
 
     #endregion
 
@@ -36,13 +37,23 @@ public class Generator
     /// The main function to produce a dungeon
     /// </summary>
 
-    public Generator(int width, int height, List<Room> rooms, List<Room> importantRoom)
+    public Generator(int width, int height, TypeDonjon type, int quantity)
     {
+        _importantRoom = new List<Salle>();
+        _rooms = new List<Salle>();
+
         _sizeX = width;
         _sizeY = height;
+        _quantityRoom = quantity;
 
-        _rooms = rooms;
-        _importantRoom = importantRoom;
+        _importantRoom.Add(type.lstSalle[0]);
+        _importantRoom.Add(type.lstSalle[1]);
+
+        foreach (Salle salle in type.lstSalle)
+        {
+            if (!_importantRoom.Contains(salle))
+                _rooms.Add(salle);
+        }
     }
 
     #region Methods to generate the dungeon
@@ -51,7 +62,8 @@ public class Generator
         Init();
         InitMaze();
 
-        GenerateRooms();
+        while (_listRooms.Count < 2)
+            GenerateRooms();
         GenerateMaze();
 
         CarveDoor();
@@ -72,18 +84,40 @@ public class Generator
             }
         }
 
-        foreach (KeyValuePair<Rect, Room> aRoom in _listRooms)
+        foreach (KeyValuePair<Rect, Salle> aRoom in _listRooms)
         {
-            for (int xPosition = (int)aRoom.Key.x; xPosition < aRoom.Key.width + (int)aRoom.Key.x; xPosition++)
+            for (int yPosition = 0; yPosition < aRoom.Value.size; yPosition++)
             {
-                for (int yPosition = (int)aRoom.Key.y; yPosition < aRoom.Key.height + (int)aRoom.Key.y; yPosition++)
+                for (int xPosition = 0; xPosition < aRoom.Value.size; xPosition++)
                 {
-                    tlmGround[xPosition, yPosition] = aRoom.Value.layerGround[(xPosition - (int)aRoom.Key.x) * (int)aRoom.Key.width + (yPosition - (int)aRoom.Key.y)];
+                    int x = xPosition + (int)aRoom.Key.x;
+                    int y = yPosition + (int)aRoom.Key.y;
+                    tlmGround[x, y] = aRoom.Value.layerFloor[yPosition * aRoom.Value.size + xPosition];
                 }
             }
         }
 
         return tlmGround;
+    }
+
+    public int[,] GenerateRoomCollision()
+    {
+        int[,] tlm = new int[_sizeX, _sizeY];
+
+        foreach (KeyValuePair<Rect, Salle> aRoom in _listRooms)
+        {
+            for (int yPosition = 0; yPosition < aRoom.Value.size; yPosition++)
+            {
+                for (int xPosition = 0; xPosition < aRoom.Value.size; xPosition++)
+                {
+                    int x = xPosition + (int)aRoom.Key.x;
+                    int y = yPosition + (int)aRoom.Key.y;
+                    tlm[x, y] = aRoom.Value.layerCollision[yPosition * aRoom.Value.size + xPosition];
+                }
+            }
+        }
+
+        return tlm;
     }
 
     public int[,] GenerateCollision()
@@ -142,7 +176,7 @@ public class Generator
     {
         int[,] tlmAir = new int[_sizeX, _sizeY];
 
-        foreach (KeyValuePair<Rect, Room> aRoom in _listRooms)
+        foreach (KeyValuePair<Rect, Salle> aRoom in _listRooms)
         {
             for (int xPosition = (int)aRoom.Key.x; xPosition < aRoom.Key.width + (int)aRoom.Key.x; xPosition++)
             {
@@ -161,7 +195,7 @@ public class Generator
         Vector2 posRoomStart = Vector2.one;
         int sizeRoom = 25;
 
-        foreach (KeyValuePair<Rect, Room> aRoom in _listRooms)
+        foreach (KeyValuePair<Rect, Salle> aRoom in _listRooms)
         {
             if (aRoom.Value == _importantRoom[0])
             {
@@ -190,13 +224,15 @@ public class Generator
          
          */
 
+
+
         while (posChest == Vector3.one)
         {
             int rndIndex = _rnd.Next(2, _listRooms.Count - 1);
             int compteur = 0;
-            KeyValuePair<Rect, Room> aRoom;
+            KeyValuePair<Rect, Salle> aRoom;
 
-            foreach (KeyValuePair<Rect, Room> room in _listRooms)
+            foreach (KeyValuePair<Rect, Salle> room in _listRooms)
             {
                 if (compteur == rndIndex)
                 {
@@ -230,6 +266,26 @@ public class Generator
         return posChest;
     }
 
+    public Vector3 GetPosBoss()
+    {
+        Vector2 posRoomStart = Vector2.one;
+        int sizeRoom = 45;
+
+        foreach (KeyValuePair<Rect, Salle> aRoom in _listRooms)
+        {
+            if (aRoom.Value == _importantRoom[1])
+            {
+                posRoomStart = aRoom.Key.position;
+                sizeRoom = aRoom.Value.size;
+                break;
+            }
+        }
+
+        Vector3 posPlayer = new Vector3(posRoomStart.x + (sizeRoom / 2) + 1, posRoomStart.y + (sizeRoom / 2) + 1, 0);
+
+        return posPlayer;
+    }
+
     public List<Vector3> GetPointsOfSpawn()
     {
         List<Vector3> points = new List<Vector3>();
@@ -243,9 +299,9 @@ public class Generator
          */
         int maximumGroupsPourcent = 70;
 
-        foreach (KeyValuePair<Rect, Room> aRoom in _listRooms)
+        foreach (KeyValuePair<Rect, Salle> aRoom in _listRooms)
         {
-            if (aRoom.Value == _importantRoom[0]) continue;
+            if (aRoom.Value == _importantRoom[0] || aRoom.Value == _importantRoom[1]) continue;
 
             int counter = 0;
             int numberOfPoints = (aRoom.Value.size - 1) / 4;
@@ -289,7 +345,7 @@ public class Generator
     private void Init()
     {
         _maze = new TileType[_sizeX, _sizeY];
-        _listRooms = new Dictionary<Rect, Room>();
+        _listRooms = new Dictionary<Rect, Salle>();
         _columns = (_widthPath - 1) / 2;
         _lstPath = new List<Vector2>();
         InitDirections();
@@ -320,11 +376,11 @@ public class Generator
     private void GenerateRooms()
     {
         int attemps = _numberAttemptRoom;
-        while (attemps > 0)
+        while (attemps > 0 && _listRooms.Count < _quantityRoom)
         {
-            Room roomToAdd;
+            Salle roomToAdd;
 
-            int rndRoomIndex = _rnd.Next(_rooms.Count - 1);
+            int rndRoomIndex = 0;
 
             if (attemps >= _numberAttemptRoom - 1) roomToAdd = _importantRoom[_numberAttemptRoom - attemps];
             else roomToAdd = _rooms[rndRoomIndex];
@@ -335,16 +391,24 @@ public class Generator
             if (room != Rect.zero) _listRooms.Add(room, roomToAdd);
             else if (room == Rect.zero && attemps >= _numberAttemptRoom - 1)
             {
-                while (room == Rect.zero)
+                int counter = 0;
+                while (room == Rect.zero && counter < 20)
+                {
                     room = Overlaps(roomToAdd);
-
+                    counter++;
+                }
+                if (counter >= 20)
+                {
+                    _listRooms = new Dictionary<Rect, Salle>();
+                    return;
+                }
                 _listRooms.Add(room, roomToAdd);
             }
 
             attemps--;
         }
 
-        foreach (KeyValuePair<Rect, Room> aRoom in _listRooms)
+        foreach (KeyValuePair<Rect, Salle> aRoom in _listRooms)
         {
             for (int xPosition = (int)aRoom.Key.x; xPosition < aRoom.Key.width + (int)aRoom.Key.x; xPosition++)
             {
@@ -356,7 +420,7 @@ public class Generator
         }
     }
 
-    private Rect Overlaps(Room roomToAdd)
+    private Rect Overlaps(Salle roomToAdd)
     {
         // Generate a random rectangle with _sizeRooms X and Y
         float xRect = _rnd.Next(_sizeX - roomToAdd.size);
@@ -369,7 +433,7 @@ public class Generator
 
             Rect room = new Rect(xRect, yRect, roomToAdd.size, roomToAdd.size);
 
-            foreach (KeyValuePair<Rect, Room> aRoom in _listRooms)
+            foreach (KeyValuePair<Rect, Salle> aRoom in _listRooms)
             {
                 Vector2Int vectorPos = new Vector2Int((int)aRoom.Key.x - _widthPath * 2, (int)aRoom.Key.y - _widthPath * 2);
 
@@ -479,7 +543,7 @@ public class Generator
 
     private void CarveDoor()
     {
-        foreach (KeyValuePair<Rect, Room> aRoom in _listRooms)
+        foreach (KeyValuePair<Rect, Salle> aRoom in _listRooms)
         {
             List<Vector2Int> bounds = new List<Vector2Int>();
 
@@ -597,5 +661,7 @@ public class Generator
             _directions[randomNumber] = tmp;
         }
     }
+
+    public int CountRooms() { return _listRooms.Count; }
     #endregion
 }

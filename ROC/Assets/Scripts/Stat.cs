@@ -7,71 +7,87 @@ using UnityEngine;
 public class Stat
 {
    [SerializeField]
-   private BarreDeVie barreVie;
+   private BarresHud barreVie;
    [SerializeField]
-   private float maxVal;
+   private BarresHud barreXp;
+
+   [Space]
+   [Header("Vie")]
    [SerializeField]
-   private float currentVal;
+   private float maxValVie;
+   [SerializeField]
+   private float currentValVie;
 
-   //[SerializeField]
-   //private BarreDeVie barreMana;
-   //[SerializeField]
-   //private float maxValM;
-   //[SerializeField]
-   //private float currentValM;
+   [Space]
+   [Header("XP")]
+   [SerializeField]
+   private float maxValXp;
+   [SerializeField]
+   private float currentValXp;
 
-   public float CurrentVal {
+   //--------------------Vie---------------------------
+
+   public float CurrentValVie {
       get
       {
-         return currentVal;
+         return currentValVie;
       }
       set 
       {
-         this.currentVal = Mathf.Clamp(value,0,MaxVal);
-         barreVie.Value = currentVal;
+         this.currentValVie = Mathf.Clamp(value,0,MaxValVie);
+         barreVie.Value = currentValVie;
       } 
    }
-   //public float CurrentValM
-   //{
-   //   get
-   //   {
-   //      return currentValM;
-   //   }
-   //   set
-   //   {
-   //      this.currentValM = Mathf.Clamp(value, 0, MaxVal);
-   //      barreMana.Value = currentValM;
-   //   }
-   //}
 
-   public float MaxVal {
+
+
+   public float MaxValVie {
       get
       {
-        return maxVal;
+        return maxValVie;
       }
       set
       {
-         this.maxVal = value;
-         barreVie.MaxValue = maxVal;
+         this.maxValVie = value;
+         barreVie.MaxValue = maxValVie;
+      }
+   }
+   //----------------------XP-------------------------
+   public float CurrentValXp
+   {
+      get
+      {
+         return currentValXp;
+      }
+      set
+      {
+         this.currentValXp = Mathf.Clamp(GameObject.FindGameObjectWithTag("player").GetComponent<PlayerStats>().Xp, 0, MaxValXp);
+         barreXp.Value = currentValXp;
+      }
+   }
+   public float MaxValXp
+   {
+      get
+      {
+         return maxValXp;
+      }
+      set
+      {
+         this.maxValXp = value;
+         barreXp.MaxValue = maxValXp;
       }
    }
 
-   //public float MaxValM
-   //{
-   //   get
-   //   {
-   //      return maxValM;
-   //   }
-   //   set
-   //   {
-   //      this.maxValM = value;
-   //      barreMana.MaxValue = maxValM;
-   //   }
-   //}
+   //----------------------------------------------------------------
 
-   public void Initialise()
+   public void InitialiseVie()
    {
-      this.MaxVal = maxVal;
-      this.CurrentVal = currentVal;
+      this.MaxValVie = maxValVie;
+      this.CurrentValVie = currentValVie;
+   }
+   public void InitialiseXp()
+   {
+      this.MaxValXp = 100;
+      this.CurrentValXp = currentValXp;
    }
 }

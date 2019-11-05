@@ -24,6 +24,11 @@ TagManager:
   - puzzle1
   - enigmeA
   - coffreActif
+  - Connector
+  - Saver
+  - txtFelicitation
+  - echec
+  - bonusEnigme
   layers:
   - Default
   - TransparentFX

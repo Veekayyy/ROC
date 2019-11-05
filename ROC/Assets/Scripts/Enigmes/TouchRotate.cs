@@ -4,11 +4,19 @@ using UnityEngine;
 
 public class TouchRotate : MonoBehaviour
 {
-    private void OnMouseDown()
+    private RectTransform _rectTransform;
+
+    private void Awake()
+    {
+        _rectTransform = GetComponent<RectTransform>();
+    }
+    public void troll()
     {
         if (!GameControl.youWin)
         {
-            transform.Rotate(0f, 0f, 90f);
+            _rectTransform.Rotate(0f, 0f, 90f);
         }
     }
+
+    
 }

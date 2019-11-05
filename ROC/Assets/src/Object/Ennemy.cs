@@ -8,20 +8,23 @@ public class Ennemy : MonoBehaviour
     public string nom;
     public int vie;
     public int attaque;
+    public int level = 1;
 
     private float _speed = 4f;
     private int _aggroRange = 10;
-    private Rigidbody2D rb;
+    public Rigidbody2D rb;
     private Vector3 _offset;
 
     private GameObject player;
     private Tilemap tlm;
     public GameObject mortEffet;
     private List<Vector2Int> path;
+    private PlayerStats playerStats;
 
     private void Awake()
     {
-        vie = 50 * 1; //will be scalling with levels 
+        vie = 50 * level;
+        playerStats = GameObject.FindGameObjectWithTag("player").GetComponent<PlayerStats>();
         player = GameObject.FindGameObjectWithTag("player");
         tlm = GameObject.FindGameObjectWithTag("layerGround").GetComponent<Tilemap>();
         _offset = Vector3.zero;
@@ -98,6 +101,8 @@ public class Ennemy : MonoBehaviour
         if (vie <= 0)
         {
             Game gm = GameObject.FindGameObjectWithTag("GameController").GetComponent<Game>();
+            playerStats.Xp += Random.Range(level + 5, level + 8);
+            playerStats.Gold += Random.Range(level + 10, level + 15);
             gm.EnnemyDead(gameObject);
 
             Destroy(gameObject);
@@ -110,7 +115,7 @@ public class Ennemy : MonoBehaviour
         Player Joueur = collision.gameObject.GetComponent<Player>();
         if (Joueur)
         {
-            Joueur.vie.CurrentVal -= 10;
+            Joueur.JoueurStats.CurrentValVie -= 10;
         }
     }
 

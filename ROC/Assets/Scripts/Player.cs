@@ -1,46 +1,91 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class Player : MonoBehaviour
 {
     // Start is called before the first frame update
-    [SerializeField]
     [Space]
     [Header("CONST DU JOUEUR")]
-    public int Niveau;
-    public Stat vie;
+    public Stat JoueurStats;
+    public PlayerStats Joueur;
+    public int niveau;
+    public Text LevelText;
+    public Text LevelTextCurr;
+    public Text GoldText;
 
     private void Awake()
     {
-        vie.Initialise();
+        JoueurStats.InitialiseVie();
+        JoueurStats.InitialiseXp();
+        niveau = Joueur.Level;
 
-        Niveau = 1;
+        InvokeRepeating("updateStats", 1, 10f);
 
     }
 
     // Update is called once per frame
     void Update()
     {
+
+       updateStats();
+
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            vie.CurrentVal += 10;
+         JoueurStats.CurrentValVie += 10;
 
         }
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            vie.CurrentVal -= 10;
+         JoueurStats.CurrentValVie -= 10;
 
         }
 
-        if (vie.CurrentVal <= 0 )
+      if (Input.GetKeyDown(KeyCode.X))
+      {
+            Joueur.Xp += 10;
+
+        }
+
+      if (Input.GetKeyDown(KeyCode.Z))
+      {
+            Joueur.Xp -= 10;
+
+        }
+
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            Joueur.Gold += 50;
+
+        }
+
+       
+
+
+        if (JoueurStats.CurrentValVie <= 0 )
         {
             
             Destroy(gameObject);
         }
     }
 
+   void updateStats()
+   {
 
-   
+      JoueurStats.CurrentValXp = GetComponent<PlayerStats>().Xp;
+      LevelText.text = (niveau+1).ToString();
+      LevelTextCurr.text = (niveau).ToString();
+      JoueurStats.MaxValXp = (niveau+1) * 50;
+      JoueurStats.MaxValVie = 100;
+
+
+        GoldText.text = (Joueur.Gold).ToString() ;
+
+      niveau = Joueur.Level;
+
+   }
+
 }

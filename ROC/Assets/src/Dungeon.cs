@@ -4,11 +4,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.U2D;
 using System.Linq;
-
-enum TypeDungeon {
-    Nature,
-    Enfer
-}
+using UnityEngine.UI;
 
 public class Dungeon
 {
@@ -16,42 +12,29 @@ public class Dungeon
     const int _sizeRoomBoss = 45;
 
     private Generator _dungeonGenerator;
-
     private Tilemap _ground = new Tilemap();
     private Tilemap _collision = new Tilemap();
     private Tilemap _air = new Tilemap();
     private bool[,] _dungeonCollision;
     private Dictionary<Vector3, GameObject> _lstEnnemy;
     private Dictionary<Vector3, GameObject> _lstEnnemyInstantiate;
+    private TypeDonjon _dungeonType;
+    private int _level;
 
-    private TypeDungeon _dungeonType;
-
-    public Dungeon(int _widthDungeon, int _heightDungeon)
+    public Dungeon(int _widthDungeon, int _heightDungeon, TypeDonjon type, int lvl, int qtt)
     {
         InitLayers();
+        _dungeonType = type;
+        _level = lvl;
         _lstEnnemy = new Dictionary<Vector3, GameObject>();
         _lstEnnemyInstantiate = new Dictionary<Vector3, GameObject>();
 
-        int[] roomBase = new int[_sizeRoom * _sizeRoom];
-        int[] roomBoss = new int[_sizeRoomBoss * _sizeRoomBoss];
+        _dungeonGenerator = new Generator(_widthDungeon, _heightDungeon,_dungeonType,qtt);
+    }
 
-        for (int i = 0; i < _sizeRoom * _sizeRoom; i++)
-            roomBase[i] = 0;
-
-        for (int i = 0; i < _sizeRoomBoss * _sizeRoomBoss; i++)
-            roomBoss[i] = 0;
-
-        List<Room> lstRoomNormal = new List<Room>();
-        lstRoomNormal.Add(new Room(_sizeRoom, roomBase));
-
-        List<Room> lstRoomImportant = new List<Room>();
-        lstRoomImportant.Add(new Room(_sizeRoom, roomBase));
-        lstRoomImportant.Add(new Room(_sizeRoomBoss, roomBoss));
-
-        _dungeonGenerator = new Generator(_widthDungeon, _heightDungeon, lstRoomNormal, lstRoomImportant);
-
-        int rnd = new System.Random().Next(2);
-        _dungeonType = (TypeDungeon)rnd;
+    public int CountRooms() 
+    { 
+        return _dungeonGenerator.CountRooms(); 
     }
 
     public void GenerateDungeon()
@@ -67,36 +50,57 @@ public class Dungeon
         // des qu'on voit pas 0, index de la tile
         int[,] dungeonAir = _dungeonGenerator.GenerateAir();
 
-        GenerateTiles(dungeonGround, dungeonCollision, dungeonAir);
+        // des qu'on voit pas 0, index resource/typename/index.png
+        int[,] dungeonRoomTile = _dungeonGenerator.GenerateRoomCollision();
+
+        GenerateTiles(dungeonGround, dungeonCollision, dungeonAir, dungeonRoomTile);
     }
 
-    private void GenerateTiles(int[,] ground, int[,] collision, int[,] air)
+    private void GenerateTiles(int[,] ground, int[,] collision, int[,] air, int[,] collisionRoom)
     {
         Tile aTile = new Tile();
-        Sprite[] allSprites = Resources.LoadAll<Sprite>("Tiles/" + _dungeonType.ToString());
+        Sprite[] allSprites = Resources.LoadAll<Sprite>("Tiles/" + _dungeonType.nom.ToString());
+        Sprite[] allSpritesRoom = Resources.LoadAll<Sprite>("TypeTiles/" + _dungeonType.nom.ToString());
+        List<int[,]> lstOof = new List<int[,]>();
+
+        lstOof.Add(ground);
+        lstOof.Add(air);
+        lstOof.Add(collisionRoom);
 
         for (int i = 0; i < ground.GetLength(0); i++)
         {
             for (int j = 0; j < ground.GetLength(1); j++)
             {
-                if (ground[i, j] == 0)
+                foreach(int[,] arr in lstOof)
                 {
-                    aTile.sprite = allSprites[0];
-                    aTile.name = "0";
-                    _ground.SetTile(new Vector3Int(i, j, 0), aTile);
+                    if(arr == ground)
+                    {
+                        if (arr[i, j] == 0)
+                        {
+                            aTile.sprite = allSpritesRoom[21];
+                            aTile.name = ground[i, j].ToString();
+                            _ground.SetTile(new Vector3Int(i, j, 0), aTile);
+                        }
+                    }
+
+                    if (arr[i, j] != 0)
+                    {
+                        aTile.sprite = allSpritesRoom[arr[i, j] - 1];
+                        aTile.name = arr[i, j].ToString();
+
+                        if(arr == ground)
+                            _ground.SetTile(new Vector3Int(i, j, 0), aTile);
+                        else if (arr == air)
+                            _air.SetTile(new Vector3Int(i, j, 0), aTile);
+                        else if (arr == collisionRoom)
+                            _collision.SetTile(new Vector3Int(i, j, 0), aTile);
+                    }
                 }
 
                 if (collision[i, j] != 0)
                 {
-                    aTile.sprite = allSprites[collision[i, j]];
-                    aTile.name = collision[i,j].ToString();
-                    _collision.SetTile(new Vector3Int(i, j, 0), aTile);
-                }
-
-                if (air[i, j] != 0)
-                {
-                    aTile.sprite = allSprites[air[i, j]];
-                    aTile.name = air[i, j].ToString();
+                    aTile.sprite = allSprites[collision[i, j] - 1];
+                    aTile.name = collision[i, j].ToString();
                     _collision.SetTile(new Vector3Int(i, j, 0), aTile);
                 }
             }
@@ -107,7 +111,7 @@ public class Dungeon
     {
         Vector3 pos = Vector3.zero;
 
-        foreach(KeyValuePair<Vector3,GameObject> ennemy in _lstEnnemyInstantiate)
+        foreach (KeyValuePair<Vector3, GameObject> ennemy in _lstEnnemyInstantiate)
         {
             if (ennemy.Value == go) pos = ennemy.Key;
         }
@@ -129,6 +133,9 @@ public class Dungeon
     public void GenerateEnnemies(GameObject theEnnemy)
     {
         List<Vector3> lstEnnemy = _dungeonGenerator.GetPointsOfSpawn();
+        Transform parent = GameObject.FindGameObjectWithTag("lstEnnemy").transform;
+        GameObject ennemy = InstanciateEnnemy(theEnnemy);
+        Sprite sprite = Resources.Load<Sprite>("Ennemies/" + _dungeonType.nomEnemy);
 
         foreach (Vector3 position in lstEnnemy)
         {
@@ -137,13 +144,31 @@ public class Dungeon
                 for (int y = -1; y <= 1; y++)
                 {
                     Vector3 pos = position - new Vector3(x, y, 0);
-                    GameObject go = InstanciateEnnemy(theEnnemy, pos);
+
+                    GameObject go = GameObject.Instantiate(ennemy);
+                    go.transform.position = pos;
+                    go.transform.parent = parent;
+                    go.name = _dungeonType.nomEnemy;
                     go.SetActive(false);
+                    go.GetComponent<SpriteRenderer>().sprite = sprite;
 
                     _lstEnnemy.Add(pos, go);
                 }
             }
         }
+
+        GameObject go1 = GameObject.Instantiate(ennemy);
+        go1.transform.position = _dungeonGenerator.GetPosBoss();
+        go1.transform.parent = parent;
+        go1.name = "BOSS";
+        go1.GetComponent<Ennemy>().vie *= 10;
+        go1.transform.localScale = new Vector3(5, 5, 1);
+        go1.GetComponent<SpriteRenderer>().sprite = sprite;
+        go1.SetActive(false);
+
+        _lstEnnemy.Add(go1.transform.position, go1);
+
+        GameObject.Destroy(ennemy);
     }
 
     public void ShowEnnemies()
@@ -152,7 +177,7 @@ public class Dungeon
         Vector2 screenOrigo = Camera.main.ScreenToWorldPoint(Vector2.zero);
         Dictionary<Vector3, GameObject> lst = new Dictionary<Vector3, GameObject>();
 
-        foreach(KeyValuePair<Vector3,GameObject> ennemy in _lstEnnemy)
+        foreach (KeyValuePair<Vector3, GameObject> ennemy in _lstEnnemy)
         {
             Vector3 pos = ennemy.Key;
 
@@ -178,16 +203,14 @@ public class Dungeon
         }
 
         _lstEnnemy = lst;
-
-        Debug.Log(_lstEnnemyInstantiate.Count);
     }
 
-    private GameObject InstanciateEnnemy(GameObject go, Vector3 pos)
+    private GameObject InstanciateEnnemy(GameObject go)
     {
         GameObject ennemy = GameObject.Instantiate(go);
 
-        ennemy.transform.position = pos;
         ennemy.name = ennemy.GetComponent<Ennemy>().nom;
+        ennemy.GetComponent<Ennemy>().level = _level;
         ennemy.transform.parent = GameObject.FindGameObjectWithTag("lstEnnemy").transform;
 
         return ennemy;

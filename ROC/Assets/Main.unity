@@ -642,6 +642,7 @@ GameObject:
   - component: {fileID: 123779930}
   - component: {fileID: 123779929}
   - component: {fileID: 123779928}
+  - component: {fileID: 123779931}
   m_Layer: 5
   m_Name: btnQuitter
   m_TagString: Untagged
@@ -711,7 +712,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 123779929}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 123779931}
+        m_MethodName: Fermer
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &123779929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -748,6 +760,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 123779926}
   m_CullTransparentMesh: 0
+--- !u!114 &123779931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 123779926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52843bbf55712484da4141efd09d507c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &149166576
 GameObject:
   m_ObjectHideFlags: 0
@@ -933,9 +957,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ad9d48d1f2f7354189fee0f80f762e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  VITTESSE_DEPLACEMENT_BASE: 5
+  CAMERA_DE_BASE: {fileID: 0}
   rb: {fileID: 196650074}
   animator: {fileID: 196650077}
+  arrowPrefab: {fileID: 0}
 --- !u!50 &196650074
 Rigidbody2D:
   serializedVersion: 4
@@ -1077,6 +1103,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfce853be2e57f344a937f783b0c5ca8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Niveau: 0
   vie:
     barreVie: {fileID: 1137763010}
     maxVal: 100
@@ -3848,6 +3875,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myText: {fileID: 1139159014}
   buttonControl: {fileID: 1912954281}
+  coffre: {fileID: 0}
 --- !u!1 &1516877339
 GameObject:
   m_ObjectHideFlags: 0
@@ -16631,6 +16659,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonTemplate: {fileID: 1419030214}
+  puzzle1: {fileID: 0}
 --- !u!1 &1919794717
 GameObject:
   m_ObjectHideFlags: 0

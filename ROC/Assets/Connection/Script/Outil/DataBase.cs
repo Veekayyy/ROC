@@ -30,7 +30,7 @@ public class DataBase : MonoBehaviour
    string database;
    string username;
    string password;
-   MySqlConnection connection;
+   public MySqlConnection connection;
    #endregion
 
    [SerializeField] InputField nomField;
@@ -42,6 +42,8 @@ public class DataBase : MonoBehaviour
 
    [SerializeField] Notification fenetrenotification;
    [SerializeField] MenuPrincipal fenetreMenuPrincipal;
+
+    public int userID;
    #endregion                
 
    #region Méthode Unité
@@ -259,6 +261,7 @@ public class DataBase : MonoBehaviour
             // On vérifie si le mot de passe est valide.
             if (tempMotDePasse == passwordField.text)
             {
+               userID = (int)MonLecteur["UtilisateurID"];
                Debug.Log("Connexion est réussite.");
                fenetreMenuPrincipal.entrerDansMenuPrincipal();
 

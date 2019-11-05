@@ -7,7 +7,7 @@ public class playerMovement : MonoBehaviour
 
     [Space]
     [Header("Constantes Mouvement")]
-    public float VITTESSE_DEPLACEMENT_BASE = 5f;
+    public float VITTESSE_DEPLACEMENT_BASE = 10f;
 
     [Space]
     [Header("Constantes Attaques")]

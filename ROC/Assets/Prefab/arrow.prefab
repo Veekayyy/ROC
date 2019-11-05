@@ -142,4 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18d52a07d8ca9e941bee1b0f7a626650, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DEGATS_BASE_FLECHES: 10
+  NIVEAU_DU_JOUEUR: 0
+  Joueur: {fileID: 0}
   effet: {fileID: 1432793045762241802, guid: 08bc42a486f09f443810999a856f18a6, type: 3}
