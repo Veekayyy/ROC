@@ -10,17 +10,16 @@ using System.Linq;
 using MySql.Data.MySqlClient;
 
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 #endregion
 
-public class DataBase : MonoBehaviour
+public abstract class DataBase : MonoBehaviour
 {
-   // Pour l'avenir après la session :
-   // https://docs.microsoft.com/fr-fr/sql/relational-databases/server-management-objects-smo/create-program/connecting-to-an-instance-of-sql-server?view=sql-server-ver15
-
    #region Attribut
+   private string Host { get; set; }
+   
+   private string BD { get; set; }
 
+<<<<<<< HEAD
    #region Chemin du fichier connection
    const string NOM_FICHIER_CONFIG = "Config.txt";
    #endregion
@@ -32,22 +31,29 @@ public class DataBase : MonoBehaviour
    string password;
    public MySqlConnection connection;
    #endregion
+=======
+   private string Utilisateur { get; set; }
+>>>>>>> 898d48c7889b76f1ae33cacf0203a950cadc44da
 
-   [SerializeField] InputField nomField;
-   [SerializeField] InputField passwordField;
+   private string MotDePasse { get; set; }
 
-   [SerializeField] InputField nomCreationField;
-   [SerializeField] InputField passwordCreationField;
-   [SerializeField] InputField confirmationMotDePasseField;
+   protected MySqlConnection Connecteur { get; private set; }
+   #endregion
 
+<<<<<<< HEAD
    [SerializeField] Notification fenetrenotification;
    [SerializeField] MenuPrincipal fenetreMenuPrincipal;
 
     public int userID;
    #endregion                
+=======
+   #region Constante
+   const string NOM_FICHIER_CONFIG = "Config.txt";
+   #endregion
+>>>>>>> 898d48c7889b76f1ae33cacf0203a950cadc44da
 
    #region Méthode Unité
-   private void Awake()
+   private void OnEnable()
    {
       // Si le fichier existe on le lis, sinon il faut le créee.
       if (!File.Exists(Application.dataPath + "/../" + NOM_FICHIER_CONFIG))
@@ -64,26 +70,27 @@ public class DataBase : MonoBehaviour
    }
    #endregion
 
-   #region Méthode privé
-   private void ConnectionBd()
+   #region Méthode protégé
+   protected void ConnectionBd()
    {
       // Déclaration de la variable locale.
-      string constr = "server=" + host + ";uid=" + username + ";pwd=" + password + ";database=" + database + ";";
+      string constr = "server=" + Host + ";uid=" + Utilisateur + ";pwd=" + MotDePasse + ";database=" + BD + ";";
 
       try
       {
-         connection = new MySqlConnection(constr);
+         Connecteur = new MySqlConnection(constr);
 
          // On ouvre la connection.
-         connection.Open();
-
-
+         Connecteur.Open();
       }
       catch (IOException Ex)
       {
          Debug.LogError(Ex);
       }
    }
+   #endregion
+
+   #region Méthode privé
 
    private void CreeFichierConfig()
    {
@@ -124,22 +131,22 @@ public class DataBase : MonoBehaviour
                {
                   // On extrait l'information du host
                   case 0:
-                     host = lignes[index].Substring(position + 1);
+                     Host = lignes[index].Substring(position + 1);
                      break;
 
                   // On extrait l'information du nom de table de la base de données.
                   case 1:
-                     database = lignes[index].Substring(position + 1);
+                     BD = lignes[index].Substring(position + 1);
                      break;
 
                   // On extrait l'information du nom d'utilisateur de la base de données.
                   case 2:
-                     username = lignes[index].Substring(position + 1);
+                     Utilisateur = lignes[index].Substring(position + 1);
                      break;
 
                   // On extrait l'information du mot de passe de la base de données.
                   case 3:
-                     password = lignes[index].Substring(position + 1);
+                     MotDePasse = lignes[index].Substring(position + 1);
                      break;
                }
             }
@@ -153,6 +160,7 @@ public class DataBase : MonoBehaviour
    }
 
    #endregion
+<<<<<<< HEAD
 
    #region Méthode publique
    public void CreationCompte()
@@ -282,4 +290,6 @@ public class DataBase : MonoBehaviour
    }
 
    #endregion
+=======
+>>>>>>> 898d48c7889b76f1ae33cacf0203a950cadc44da
 }
